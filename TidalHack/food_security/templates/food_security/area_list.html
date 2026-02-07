@@ -1,0 +1,132 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}Food Desert Areas - Food Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1><i class="bi bi-pin-map"></i> Food Desert Areas</h1>
+            <p class="text-muted">Comprehensive dataset of identified food desert regions</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'food_security:area-create' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus"></i> Add New Area
+            </a>
+        </div>
+    </div>
+    
+    {% if areas %}
+        <div class="row">
+            {% for area in areas %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="mb-0">{{ area.area_name }}</h5>
+                                    <small>{{ area.city }}, {{ area.state }} {{ area.zip_code }}</small>
+                                </div>
+                                {% if area.analysis %}
+                                    <span class="severity-{{ area.analysis.severity_level }}">
+                                        {{ area.analysis.get_severity_level_display }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not Analyzed</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>Population:</strong> {{ area.population|floatformat:0 }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Poverty Rate:</strong> {{ area.poverty_rate }}%
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>Distance to Grocery:</strong> {{ area.distance_to_grocery }} mi
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Grocery Stores:</strong> {{ area.grocery_store_count }}
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>Food Insecurity:</strong> {{ area.food_insecurity_rate }}%
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Unemployment:</strong> {{ area.unemployment_rate }}%
+                                </div>
+                            </div>
+                            
+                            {% if area.analysis %}
+                                <div class="mb-3">
+                                    <strong>Food Insecurity Score:</strong>
+                                    <div class="score-bar score-{{ area.analysis.food_insecurity_score|add:'0'|slice:':2' }}-{{ area.analysis.food_insecurity_score|add:'10'|slice:':2' }}">
+                                        {{ area.analysis.food_insecurity_score|floatformat:1 }}/100
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-light">
+                            <a href="{% url 'food_security:area-detail' area.pk %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View Details
+                            </a>
+                            <a href="{% url 'food_security:area-update' area.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            {% if area.analysis %}
+                                <a href="{% url 'food_security:analysis-dashboard' area.pk %}" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-graph-up"></i> Analysis
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No food desert areas found. <a href="{% url 'food_security:area-create' %}">Create the first one</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

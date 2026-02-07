@@ -1,0 +1,180 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}Dashboard - Food Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 15px; color: white;">
+                <h1 style="font-size: 2.5rem; margin-bottom: 10px;">
+                    <i class="bi bi-speedometer2"></i> Food Security Analytics
+                </h1>
+                <p style="font-size: 1.1rem; opacity: 0.95; margin: 0;">Real-time monitoring of food desert challenges and opportunities</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Statistics -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_areas }}</div>
+                <div class="stat-label">Analyzed Areas</div>
+                <div class="stat-sublabel">Geographic Regions</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card" style="border-color: #dc3545;">
+                <div class="stat-value" style="color: #dc3545;">{{ critical_count }}</div>
+                <div class="stat-label">Critical Zones</div>
+                <div class="stat-sublabel">Urgent Action Needed</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card" style="border-color: #fd7e14;">
+                <div class="stat-value" style="color: #fd7e14;">{{ severe_count }}</div>
+                <div class="stat-label">Severe Regions</div>
+                <div class="stat-sublabel">High Priority</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="stat-card" style="border-color: #667eea;">
+                <div class="stat-value" style="color: #667eea;">{{ total_population|default:"0" }}</div>
+                <div class="stat-label">Population</div>
+                <div class="stat-sublabel">At Risk</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Analyses -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-clock-history"></i> Recent Analyses & Insights
+                </div>
+                <div class="card-body">
+                    {% if recent_analyses %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">Area Name</th>
+                                        <th style="width: 20%;">Location</th>
+                                        <th style="width: 15%;">Severity</th>
+                                        <th style="width: 20%;">Food Insecurity</th>
+                                        <th style="width: 15%;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for analysis in recent_analyses %}
+                                        <tr>
+                                            <td>
+                                                <strong style="font-size: 1rem;">{{ analysis.food_desert.area_name }}</strong>
+                                            </td>
+                                            <td>
+                                                <small>{{ analysis.food_desert.city }}, {{ analysis.food_desert.state }}</small>
+                                            </td>
+                                            <td>
+                                                <span class="severity-{{ analysis.severity_level }}">
+                                                    {{ analysis.get_severity_level_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <div class="progress" style="flex: 1; height: 20px;">
+                                                        <div class="progress-bar" role="progressbar" 
+                                                             style="width: {{ analysis.food_insecurity_score }}%; background: linear-gradient(90deg, #dc3545, #721c24);"
+                                                             aria-valuenow="{{ analysis.food_insecurity_score }}" aria-valuemin="0" aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <small style="white-space: nowrap; font-weight: 600;">{{ analysis.food_insecurity_score|floatformat:0 }}/100</small>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'food_security:analysis-dashboard' analysis.food_desert.pk %}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-arrow-right"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info" style="margin: 0;">
+                            <i class="bi bi-info-circle"></i> No analyses yet. <a href="{% url 'food_security:area-create' %}" class="alert-link">Get started by creating your first analysis</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action Sections -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card" style="border-top: 5px solid #667eea; text-align: center;">
+                <div class="card-body">
+                    <i class="bi bi-plus-circle" style="font-size: 3rem; color: #667eea; margin-bottom: 15px;"></i>
+                    <h5 style="margin-bottom: 15px;">Start New Analysis</h5>
+                    <p style="color: #666; margin-bottom: 20px;">Add a food desert area and generate comprehensive analysis with data-driven recommendations</p>
+                    <a href="{% url 'food_security:area-create' %}" class="btn btn-primary btn-lg" style="width: 100%;">
+                        <i class="bi bi-plus"></i> Create Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card" style="border-top: 5px solid #28a745; text-align: center;">
+                <div class="card-body">
+                    <i class="bi bi-list-ul" style="font-size: 3rem; color: #28a745; margin-bottom: 15px;"></i>
+                    <h5 style="margin-bottom: 15px;">Browse All Areas</h5>
+                    <p style="color: #666; margin-bottom: 20px;">View complete list of analyzed food desert regions with detailed metrics and severity levels</p>
+                    <a href="{% url 'food_security:area-list' %}" class="btn btn-success btn-lg" style="width: 100%;">
+                        <i class="bi bi-list"></i> View All Areas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Overview -->
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-stars"></i> System Features
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div style="padding: 20px; text-align: center;">
+                                <i class="bi bi-graph-up" style="font-size: 2.5rem; color: #667eea; margin-bottom: 10px;"></i>
+                                <h6>Advanced Analysis</h6>
+                                <p style="font-size: 0.9rem; color: #666;">Multi-factor assessment of 13+ food security indicators</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="padding: 20px; text-align: center;">
+                                <i class="bi bi-lightbulb" style="font-size: 2.5rem; color: #ffc107; margin-bottom: 10px;"></i>
+                                <h6>Smart Recommendations</h6>
+                                <p style="font-size: 0.9rem; color: #666;">8 solution categories ranked by impact and feasibility</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div style="padding: 20px; text-align: center;">
+                                <i class="bi bi-calculator" style="font-size: 2.5rem; color: #dc3545; margin-bottom: 10px;"></i>
+                                <h6>Cost Estimates</h6>
+                                <p style="font-size: 0.9rem; color: #666;">Investment and timeline projections for implementation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

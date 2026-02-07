@@ -1,0 +1,231 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Food Desert Area{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="bi bi-{% if form.instance.pk %}pencil{% else %}plus{% endif %}"></i>
+                        {% if form.instance.pk %}Edit{% else %}Create{% endif %} Food Desert Area
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-geo-alt"></i> Location Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.area_name.id_for_label }}" class="form-label">
+                                        {{ form.area_name.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.area_name }}
+                                    {% if form.area_name.errors %}<div class="text-danger small">{{ form.area_name.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }}</label>
+                                    {{ form.address }}
+                                    {% if form.address.errors %}<div class="text-danger small">{{ form.address.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.city.id_for_label }}" class="form-label">
+                                        {{ form.city.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.city }}
+                                    {% if form.city.errors %}<div class="text-danger small">{{ form.city.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="{{ form.state.id_for_label }}" class="form-label">
+                                                {{ form.state.label }} <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.state }}
+                                            {% if form.state.errors %}<div class="text-danger small">{{ form.state.errors }}</div>{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="{{ form.zip_code.id_for_label }}" class="form-label">{{ form.zip_code.label }}</label>
+                                            {{ form.zip_code }}
+                                            {% if form.zip_code.errors %}<div class="text-danger small">{{ form.zip_code.errors }}</div>{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="{{ form.latitude.id_for_label }}" class="form-label">
+                                                {{ form.latitude.label }} <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.latitude }}
+                                            {% if form.latitude.errors %}<div class="text-danger small">{{ form.latitude.errors }}</div>{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="{{ form.longitude.id_for_label }}" class="form-label">
+                                                {{ form.longitude.label }} <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.longitude }}
+                                            {% if form.longitude.errors %}<div class="text-danger small">{{ form.longitude.errors }}</div>{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-people"></i> Demographics</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.population.id_for_label }}" class="form-label">
+                                        {{ form.population.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.population }}
+                                    {% if form.population.errors %}<div class="text-danger small">{{ form.population.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.poverty_rate.id_for_label }}" class="form-label">
+                                        {{ form.poverty_rate.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.poverty_rate }}
+                                    <small class="form-text text-muted">{{ form.poverty_rate.help_text }}</small>
+                                    {% if form.poverty_rate.errors %}<div class="text-danger small">{{ form.poverty_rate.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.median_income.id_for_label }}" class="form-label">
+                                        {{ form.median_income.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.median_income }}
+                                    {% if form.median_income.errors %}<div class="text-danger small">{{ form.median_income.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.unemployment_rate.id_for_label }}" class="form-label">{{ form.unemployment_rate.label }}</label>
+                                    {{ form.unemployment_rate }}
+                                    {% if form.unemployment_rate.errors %}<div class="text-danger small">{{ form.unemployment_rate.errors }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-shop"></i> Food Access Metrics</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.distance_to_grocery.id_for_label }}" class="form-label">
+                                        {{ form.distance_to_grocery.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.distance_to_grocery }}
+                                    <small class="form-text text-muted">Distance in miles</small>
+                                    {% if form.distance_to_grocery.errors %}<div class="text-danger small">{{ form.distance_to_grocery.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.grocery_store_count.id_for_label }}" class="form-label">
+                                        {{ form.grocery_store_count.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.grocery_store_count }}
+                                    {% if form.grocery_store_count.errors %}<div class="text-danger small">{{ form.grocery_store_count.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.farmers_market_count.id_for_label }}" class="form-label">{{ form.farmers_market_count.label }}</label>
+                                    {{ form.farmers_market_count }}
+                                    {% if form.farmers_market_count.errors %}<div class="text-danger small">{{ form.farmers_market_count.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.food_assistance_programs.id_for_label }}" class="form-label">{{ form.food_assistance_programs.label }}</label>
+                                    {{ form.food_assistance_programs }}
+                                    {% if form.food_assistance_programs.errors %}<div class="text-danger small">{{ form.food_assistance_programs.errors }}</div>{% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5 class="mb-3"><i class="bi bi-bus-front"></i> Transportation & Health</h5>
+                                
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        {{ form.has_public_transit }}
+                                        <label for="{{ form.has_public_transit.id_for_label }}" class="form-check-label">
+                                            {{ form.has_public_transit.label }}
+                                        </label>
+                                    </div>
+                                    {% if form.has_public_transit.errors %}<div class="text-danger small">{{ form.has_public_transit.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.vehicle_ownership_rate.id_for_label }}" class="form-label">{{ form.vehicle_ownership_rate.label }}</label>
+                                    {{ form.vehicle_ownership_rate }}
+                                    {% if form.vehicle_ownership_rate.errors %}<div class="text-danger small">{{ form.vehicle_ownership_rate.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.food_insecurity_rate.id_for_label }}" class="form-label">
+                                        {{ form.food_insecurity_rate.label }} <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.food_insecurity_rate }}
+                                    {% if form.food_insecurity_rate.errors %}<div class="text-danger small">{{ form.food_insecurity_rate.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.health_problems_rate.id_for_label }}" class="form-label">{{ form.health_problems_rate.label }}</label>
+                                    {{ form.health_problems_rate }}
+                                    {% if form.health_problems_rate.errors %}<div class="text-danger small">{{ form.health_problems_rate.errors }}</div>{% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.data_year.id_for_label }}" class="form-label">{{ form.data_year.label }}</label>
+                                    {{ form.data_year }}
+                                    {% if form.data_year.errors %}<div class="text-danger small">{{ form.data_year.errors }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-check"></i> {% if form.instance.pk %}Update{% else %}Create{% endif %} Area
+                                </button>
+                                <a href="{% if form.instance.pk %}{% url 'food_security:area-detail' form.instance.pk %}{% else %}{% url 'food_security:area-list' %}{% endif %}" class="btn btn-secondary btn-lg">
+                                    <i class="bi bi-x"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"], input[type="number"], select {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        width: 100%;
+    }
+    
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,180 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}{{ area.area_name }} - Food Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>{{ area.area_name }}</h1>
+            <p class="text-muted">{{ area.address }}, {{ area.city }}, {{ area.state }} {{ area.zip_code }}</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'food_security:area-update' area.pk %}" class="btn btn-secondary">
+                <i class="bi bi-pencil"></i> Edit Area
+            </a>
+        </div>
+    </div>
+    
+    <!-- Area Details Card -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Area Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <strong>Population:</strong><br>
+                            {{ area.population|floatformat:0 }}
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Median Income:</strong><br>
+                            ${{ area.median_income|floatformat:0 }}
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Poverty Rate:</strong><br>
+                            {{ area.poverty_rate }}%
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Unemployment Rate:</strong><br>
+                            {{ area.unemployment_rate }}%
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>Distance to Grocery:</strong><br>
+                            {{ area.distance_to_grocery }} miles
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Grocery Stores:</strong><br>
+                            {{ area.grocery_store_count }}
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Farmers Markets:</strong><br>
+                            {{ area.farmers_market_count }}
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Food Assistance Programs:</strong><br>
+                            {{ area.food_assistance_programs }}
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Public Transit:</strong><br>
+                            {% if area.has_public_transit %}<span class="badge bg-success">Available</span>{% else %}<span class="badge bg-danger">Not Available</span>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Vehicle Ownership Rate:</strong><br>
+                            {{ area.vehicle_ownership_rate }}%
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Food Insecurity Rate:</strong><br>
+                            {{ area.food_insecurity_rate }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analysis Results -->
+    {% if analysis %}
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-graph-up"></i> Analysis Results</h5>
+                            <a href="{% url 'food_security:analysis-dashboard' area.pk %}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-arrow-right"></i> Full Analysis Dashboard
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-3 text-center">
+                                <div class="mb-2">
+                                    <span class="severity-{{ analysis.severity_level }}" style="font-size: 1.1rem;">
+                                        {{ analysis.get_severity_level_display }}
+                                    </span>
+                                </div>
+                                <p class="text-muted">Severity Level</p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="score-bar score-{{ analysis.food_insecurity_score|add:'0'|slice:':2' }}-{{ analysis.food_insecurity_score|add:'10'|slice:':2' }}" style="justify-content: center; margin-bottom: 10px;">
+                                    {{ analysis.food_insecurity_score|floatformat:1 }}
+                                </div>
+                                <p class="text-muted">Food Insecurity</p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="score-bar score-{{ analysis.accessibility_score|add:'0'|slice:':2' }}-{{ analysis.accessibility_score|add:'10'|slice:':2' }}" style="justify-content: center; margin-bottom: 10px;">
+                                    {{ analysis.accessibility_score|floatformat:1 }}
+                                </div>
+                                <p class="text-muted">Accessibility</p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="score-bar score-{{ analysis.infrastructure_score|add:'0'|slice:':2' }}-{{ analysis.infrastructure_score|add:'10'|slice:':2' }}" style="justify-content: center; margin-bottom: 10px;">
+                                    {{ analysis.infrastructure_score|floatformat:1 }}
+                                </div>
+                                <p class="text-muted">Infrastructure</p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong><i class="bi bi-info-circle"></i> Summary:</strong> This area has a {{ analysis.get_severity_level_display|lower }} food insecurity status requiring {{ analysis.severity_level|title }} intervention.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning mb-4">
+            <i class="bi bi-exclamation-circle"></i> This area has not been analyzed yet. 
+            <a href="{% url 'food_security:analysis-dashboard' area.pk %}" class="alert-link">Run analysis now</a>
+        </div>
+    {% endif %}
+    
+    <!-- Recommendations Preview -->
+    {% if recommendations %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Top Recommendations</h5>
+                            <a href="{% url 'food_security:analysis-dashboard' area.pk %}" class="btn btn-sm btn-primary">
+                                View All
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% for recommendation in recommendations|slice:":3" %}
+                            <div class="recommendation-card p-3 mb-3 rounded border">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-1">{{ recommendation.title }}</h6>
+                                        <span class="category-badge">{{ recommendation.get_category_display }}</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Priority: {{ recommendation.priority }}/5</small><br>
+                                        <small class="text-muted">Feasibility: {{ recommendation.feasibility }}/5</small>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><small>{{ recommendation.description }}</small></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

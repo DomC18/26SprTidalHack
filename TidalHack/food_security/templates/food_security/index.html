@@ -1,0 +1,148 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}Dashboard - Food Security Analyzer{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="mb-4">
+                <i class="bi bi-speedometer2"></i> Food Desert Analysis Dashboard
+            </h1>
+            <p class="lead text-muted">Real-time monitoring and analysis of food security challenges</p>
+        </div>
+    </div>
+    
+    <!-- Statistics Section -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="stat-value">{{ total_areas }}</div>
+                <div class="stat-label">Food Desert Areas</div>
+                <small class="text-muted">Analyzed Regions</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="stat-value text-danger">{{ critical_count }}</div>
+                <div class="stat-label">Critical Areas</div>
+                <small class="text-muted">Immediate Action Needed</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="stat-value text-warning">{{ severe_count }}</div>
+                <div class="stat-label">Severe Areas</div>
+                <small class="text-muted">High Priority</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="stat-value text-info">{{ total_population }}</div>
+                <div class="stat-label">Population at Risk</div>
+                <small class="text-muted">Total Affected</small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Analyses -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-clock-history"></i> Recent Analyses
+                </div>
+                <div class="card-body">
+                    {% if recent_analyses %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Area Name</th>
+                                        <th>Location</th>
+                                        <th>Severity</th>
+                                        <th>Food Insecurity Score</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for analysis in recent_analyses %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ analysis.food_desert.area_name }}</strong>
+                                            </td>
+                                            <td>
+                                                {{ analysis.food_desert.city }}, {{ analysis.food_desert.state }}
+                                            </td>
+                                            <td>
+                                                <span class="severity-{{ analysis.severity_level }}">
+                                                    {{ analysis.get_severity_level_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="score-bar score-{{ analysis.food_insecurity_score|add:'0'|slice:':2' }}-{{ analysis.food_insecurity_score|add:'10'|slice:':2' }}">
+                                                    {{ analysis.food_insecurity_score|floatformat:1 }}/100
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ analysis.created_at|date:"M d, Y" }}</small>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'food_security:analysis-dashboard' analysis.food_desert.pk %}" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> No analyses available yet. <a href="{% url 'food_security:area-create' %}">Create your first analysis</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-plus-circle"></i> Quick Actions
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'food_security:area-create' %}" class="btn btn-primary btn-lg w-100 mb-2">
+                        <i class="bi bi-plus"></i> Create New Food Desert Analysis
+                    </a>
+                    <a href="{% url 'food_security:area-list' %}" class="btn btn-outline-secondary btn-lg w-100">
+                        <i class="bi bi-list"></i> View All Food Deserts
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> About This System
+                </div>
+                <div class="card-body">
+                    <p>This AI/ML-powered system analyzes food desert areas and provides data-driven recommendations to improve food security and accessibility.</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li>Comprehensive data collection and analysis</li>
+                        <li>Severity assessment and scoring</li>
+                        <li>Actionable recommendations by category</li>
+                        <li>Investment and timeline estimates</li>
+                        <li>Community impact projections</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

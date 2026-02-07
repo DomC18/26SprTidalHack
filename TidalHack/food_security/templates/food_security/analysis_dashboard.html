@@ -1,0 +1,305 @@
+{% extends 'food_security/base.html' %}
+
+{% block title %}Analysis Dashboard: {{ area.area_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Analysis Dashboard: {{ area.area_name }}</h1>
+            <p class="text-muted">Comprehensive food security analysis and recommendations</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'food_security:area-detail' area.pk %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Area
+            </a>
+        </div>
+    </div>
+    
+    <!-- Severity & Key Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body p-4">
+                    <h6 class="card-title text-muted mb-3">Severity Level</h6>
+                    <span class="severity-{{ analysis.severity_level }} text-uppercase" style="font-size: 1.3rem;">
+                        {{ analysis.get_severity_level_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body p-4">
+                    <h6 class="card-title text-muted mb-3">Food Insecurity Score</h6>
+                    <div class="score-bar score-{{ analysis.food_insecurity_score|add:'0'|slice:':2' }}-{{ analysis.food_insecurity_score|add:'10'|slice:':2' }}" style="justify-content: center; margin-bottom: 0; font-size: 1.3rem;">
+                        {{ analysis.food_insecurity_score|floatformat:1 }}/100
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body p-4">
+                    <h6 class="card-title text-muted mb-3">Estimated Investment</h6>
+                    <p class="mb-0" style="font-size: 1.2rem; font-weight: bold;">
+                        {{ analysis.estimated_investment }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Scores -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Detailed Assessment Scores</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Accessibility Score: {{ analysis.accessibility_score|floatformat:1 }}/100</strong>
+                            <div class="progress mt-2" style="height: 25px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ analysis.accessibility_score }}%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"
+                                     aria-valuenow="{{ analysis.accessibility_score }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ analysis.accessibility_score|floatformat:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Income Adequacy Score: {{ analysis.income_adequacy_score|floatformat:1 }}/100</strong>
+                            <div class="progress mt-2" style="height: 25px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ analysis.income_adequacy_score }}%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"
+                                     aria-valuenow="{{ analysis.income_adequacy_score }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ analysis.income_adequacy_score|floatformat:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Infrastructure Score: {{ analysis.infrastructure_score|floatformat:1 }}/100</strong>
+                            <div class="progress mt-2" style="height: 25px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ analysis.infrastructure_score }}%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);"
+                                     aria-valuenow="{{ analysis.infrastructure_score }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ analysis.infrastructure_score|floatformat:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Food Insecurity Score: {{ analysis.food_insecurity_score|floatformat:1 }}/100</strong>
+                            <div class="progress mt-2" style="height: 25px;">
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: {{ analysis.food_insecurity_score }}%;"
+                                     aria-valuenow="{{ analysis.food_insecurity_score }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ analysis.food_insecurity_score|floatformat:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Key Challenges -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger">
+                    <h5 class="mb-0 text-white"><i class="bi bi-exclamation-circle"></i> Key Challenges</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ analysis.key_challenges|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h5 class="mb-0 text-white"><i class="bi bi-calendar-check"></i> Implementation Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ analysis.implementation_timeline }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Plans -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Short-term Actions (0-6 Months)</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ analysis.short_term_actions|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success">
+                    <h5 class="mb-0 text-white"><i class="bi bi-target"></i> Long-term Actions (1-3+ Years)</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ analysis.long_term_actions|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Priority Solutions -->
+    {% if analysis.priority_solutions %}
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-star"></i> Priority Solutions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Priority</th>
+                                        <th>Feasibility</th>
+                                        <th>Timeline</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for solution in analysis.priority_solutions %}
+                                        <tr>
+                                            <td><strong>{{ solution.title }}</strong></td>
+                                            <td><span class="badge bg-secondary">{{ solution.category }}</span></td>
+                                            <td>
+                                                <span class="badge" style="background-color: {% if solution.priority == 1 %}#dc3545{% elif solution.priority == 2 %}#fd7e14{% elif solution.priority == 3 %}#ffc107{% else %}#28a745{% endif %};">
+                                                    {{ solution.priority }}/5
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge" style="background-color: {% if solution.feasibility >= 4 %}#28a745{% elif solution.feasibility >= 3 %}#ffc107{% else %}#dc3545{% endif %};">
+                                                    {{ solution.feasibility }}/5
+                                                </span>
+                                            </td>
+                                            <td>{{ solution.timeline }} months</td>
+                                            <td>{{ solution.cost }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Detailed Recommendations -->
+    {% if recommendations %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Detailed Recommendations ({{ recommendations.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        {% regroup recommendations by category as recommendations_by_category %}
+                        
+                        {% for category_group in recommendations_by_category %}
+                            <div class="mb-4">
+                                <h6 class="text-uppercase text-muted mb-3">
+                                    <i class="bi bi-tag"></i> {{ category_group.grouper|upper }}
+                                </h6>
+                                
+                                {% for recommendation in category_group.list %}
+                                    <div class="recommendation-card p-3 mb-3 rounded border">
+                                        <div class="row mb-2">
+                                            <div class="col-md-8">
+                                                <h6 class="mb-2">
+                                                    {{ recommendation.title }}
+                                                    <br>
+                                                    <span class="category-badge">{{ recommendation.get_category_display }}</span>
+                                                </h6>
+                                                <p class="mb-2">{{ recommendation.description }}</p>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <div class="mb-2">
+                                                    <small class="d-block">
+                                                        <strong>Priority:</strong> 
+                                                        <span class="badge bg-primary">{{ recommendation.priority }}/5</span>
+                                                    </small>
+                                                    <small class="d-block">
+                                                        <strong>Feasibility:</strong> 
+                                                        <span class="badge bg-success">{{ recommendation.feasibility }}/5</span>
+                                                    </small>
+                                                    <small class="d-block">
+                                                        <strong>Cost:</strong> {{ recommendation.estimated_cost }}
+                                                    </small>
+                                                    <small class="d-block">
+                                                        <strong>Timeline:</strong> {{ recommendation.timeline_months }} months
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr class="my-2">
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <strong><small>Rationale:</small></strong>
+                                                <p><small>{{ recommendation.rationale }}</small></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong><small>Expected Impact:</small></strong>
+                                                <p><small>{{ recommendation.expected_impact }}</small></p>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if recommendation.implementation_steps %}
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <strong><small>Implementation Steps:</small></strong>
+                                                    <ul style="font-size: 0.9rem; margin-bottom: 0;">
+                                                        {% for step in recommendation.implementation_steps %}
+                                                            <li>{{ step }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .recommendation-card {
+        border-left: 4px solid #667eea;
+        background-color: #f8f9fa;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        background-color: #e9ecef;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #667eea;
+    }
+</style>
+{% endblock %}
