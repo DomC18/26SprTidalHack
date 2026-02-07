@@ -1,69 +1,98 @@
-# React Starter App
+# Django Project - Tidal Hack
 
-A modern React starter application built with TypeScript and Vite.
+A Django web application for managing and processing tidal data.
 
 ## Features
 
-- ⚡ **Vite** - Lightning fast build tool and dev server
-- 🎨 **React 18** - Latest React features
-- 📘 **TypeScript** - Type-safe development
-- 🔥 **HMR** - Hot Module Replacement for fast development
+- 🚀 **Django** - Robust Python web framework
+- 🗄️ **Database Support** - Built-in ORM for database management
+- 🔐 **Security** - Django's built-in security features
+- 🎯 **Admin Interface** - Built-in Django admin panel
+- 🔧 **Modular Apps** - Organized app-based architecture
 
 ## Project Structure
 
 ```
-├── src/
-│   ├── main.tsx       # React app entry point
-│   ├── App.tsx        # Main App component
-│   ├── App.css        # App component styles
-│   └── index.css      # Global styles
-├── index.html         # HTML template
-├── package.json       # Project dependencies
-├── tsconfig.json      # TypeScript configuration
-└── vite.config.ts     # Vite configuration
+├── manage.py          # Django management script
+├── TidalHack/         # Project configuration package
+│   ├── __init__.py
+│   ├── asgi.py        # ASGI configuration
+│   ├── settings.py    # Project settings
+│   ├── urls.py        # URL routing
+│   └── wsgi.py        # WSGI configuration
+└── README.md          # This file
 ```
 
 ## Installation
 
+1. Create a virtual environment:
+
 ```bash
-npm install
+python -m venv venv
+```
+
+2. Activate the virtual environment:
+
+On Windows:
+```bash
+venv\Scripts\activate
+```
+
+On macOS/Linux:
+```bash
+source venv/bin/activate
+```
+
+3. Install dependencies:
+
+```bash
+pip install django
 ```
 
 ## Development
 
-Start the development server with hot module replacement:
+Start the development server:
 
 ```bash
-npm run dev
+python manage.py runserver
 ```
 
-The app will open automatically at `http://localhost:5173`.
+The application will be available at `http://localhost:8000`.
 
-## Building
+## Database
 
-Build the application for production:
+Run migrations to set up the database:
 
 ```bash
-npm run build
+python manage.py migrate
 ```
 
-## Preview
-
-Preview the production build locally:
+Create a superuser for the admin panel:
 
 ```bash
-npm run preview
+python manage.py createsuperuser
 ```
 
 ## Getting Started
 
-1. Edit `src/App.tsx` to customize your application
-2. Styles can be modified in `src/App.css` and `src/index.css`
-3. Add new components in the `src/` directory
-4. Changes will reflect automatically thanks to HMR
+1. Update `TidalHack/settings.py` with your project configuration
+2. Create Django apps using `python manage.py startapp appname`
+3. Define models in your app's `models.py`
+4. Create views and URL routes for your application
+5. Access the admin panel at `http://localhost:8000/admin`
+
+## Deployment
+
+For production deployment:
+
+```bash
+python manage.py collectstatic
+```
+
+Configure your web server (Gunicorn, uWSGI, etc.) to serve the WSGI application in `TidalHack/wsgi.py`.
 
 ## Learn More
 
-- [React Documentation](https://react.dev)
-- [Vite Documentation](https://vitejs.dev)
-- [TypeScript Documentation](https://www.typescriptlang.org)
+- [Django Documentation](https://docs.djangoproject.com)
+- [Django Models](https://docs.djangoproject.com/en/stable/topics/db/models/)
+- [Django Admin](https://docs.djangoproject.com/en/stable/ref/contrib/admin/)
