@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.db.models import Sum
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -223,7 +224,7 @@ def index(request):
     critical_analyses = AnalysisResult.objects.filter(severity_level='critical').count()
     severe_analyses = AnalysisResult.objects.filter(severity_level='severe').count()
     total_population_at_risk = FoodDesertArea.objects.aggregate(
-        total=sum('population')
+        total=Sum('population')
     )['total'] or 0
     
     # Get recent analyses
